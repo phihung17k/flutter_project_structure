@@ -222,3 +222,49 @@ lib/
 └── flows/
 ├── auth_flow_test.dart
 └── product_flow_test.dart
+
+## Data Flow
+
+1. Data Layer (Features):
+
+- Each feature (e.g., authentication, dashboard, profile, products, notifications) has a data/ directory containing:
+
+  - Datasources:
+
+    - Remote Datasources (e.g., auth_remote_datasource.dart, dashboard_remote_datasource.dart): These handle API calls, typically using the dio_client.dart or api_client.dart from infrastructure/network/. The response from an API (e.g., JSON data) is received here.
+    - Local Datasources (e.g., auth_local_datasource.dart, product_local_datasource.dart): These handle local storage (e.g., caching or secure storage) and may process responses stored locally using secure_storage.dart or cache_manager.dart from infrastructure/storage/.
+
+  - Repositories (e.g., auth_repository_impl.dart, product_repository_impl.dart): These act as an abstraction layer, combining data from remote and local datasources. They process raw responses (e.g., JSON) into models (e.g., user_model.dart, product_model.dart) or entities (e.g., user.dart, product.dart).
+
+How Responses Are Processed:
+
+- A remote datasource (e.g., auth_remote_datasource.dart) makes an API call using dio_client.dart or api_client.dart.
+- The raw response (e.g., JSON) is parsed into a model (e.g., auth_user_model.dart or product_model.dart) within the datasource or repository.
+- The repository then converts the model into a domain entity (e.g., auth_user.dart, product.dart) for use in the domain and presentation layers.
+
+2. Infrastructure Layer:
+
+- Network Services (infrastructure/network/):
+
+  - dio_client.dart or api_client.dart: These handle HTTP requests and return raw responses (e.g., HTTP status codes, JSON data).
+  - interceptors/ (e.g., auth_interceptor.dart, logging_interceptor.dart): These modify or log responses, such as adding authentication headers or logging errors.
+
+- Storage Services (infrastructure/storage/):
+
+  - Responses from APIs may be cached using cache_manager.dart or stored securely using secure_storage.dart (e.g., for tokens or user data).
+
+- Connectivity (connectivity_service.dart): Checks network status, which may affect how responses are handled (e.g., falling back to cached data if offline).
+
+3. Domain Layer:
+
+- Use Cases (e.g., login_usecase.dart, get_products_usecase.dart): These interact with repositories to fetch or process data. They receive the processed response (as entities) from the repository and pass it to the presentation layer.
+- Entities (e.g., auth_user.dart, product.dart): These represent the cleaned-up, platform-agnostic data derived from raw API or storage responses.
+
+4. Presentation Layer:
+
+- State Management (e.g., auth_cubit.dart, product_cubit.dart): The Cubit or BLoC receives data from use cases and updates the UI state. The response data (now as entities or models) is used to update the UI.
+- Pages/Widgets (e.g., login_page.dart, products_page.dart): These display the response data (e.g., user details, product lists) to the user.
+
+## UI
+
+[flutterawesome](https://flutterawesome.com/)

@@ -1,8 +1,17 @@
-import '../../domain/entities/auth_user.dart';
+class AuthUserModel {
+  final String id;
+  final String email;
+  final String name;
 
-class AuthUserModel extends AuthUser {
-  AuthUserModel({required super.id, required super.token});
+  AuthUserModel({required this.id, required this.email, required this.name});
 
-  factory AuthUserModel.fromJson(Map<String, dynamic> json) =>
-      AuthUserModel(id: json['id'], token: json['token']);
+  factory AuthUserModel.fromJson(Map<String, dynamic> json) {
+    return AuthUserModel(
+      id: json['id'] as String,
+      email: json['email'] as String,
+      name: json['name'] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {'id': id, 'email': email, 'name': name};
 }

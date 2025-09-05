@@ -3,6 +3,7 @@ import 'package:connectivity_plus/connectivity_plus.dart'; // Add dependency if 
 class ConnectivityService {
   Future<bool> isConnected() async {
     var connectivityResult = await Connectivity().checkConnectivity();
-    return connectivityResult != ConnectivityResult.none;
+    return connectivityResult.isNotEmpty &&
+        connectivityResult.contains(ConnectivityResult.none);
   }
 }

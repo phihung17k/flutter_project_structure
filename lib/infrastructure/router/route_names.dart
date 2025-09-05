@@ -1,4 +1,6 @@
 class RouteNames {
-  static const String login = '/login';
-  static const String dashboard = '/dashboard';
+  static String get init => '/';
+  static String get login => '/login';
+  static String get dashboard => '/dashboard';
+  static String get admin => '/admin';
 }

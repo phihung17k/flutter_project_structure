@@ -1,6 +1,7 @@
 class AuthUser {
   final String id;
-  final String token;
+  final String email;
+  final String name;
 
-  AuthUser({required this.id, required this.token});
+  AuthUser({required this.id, required this.email, required this.name});
 }

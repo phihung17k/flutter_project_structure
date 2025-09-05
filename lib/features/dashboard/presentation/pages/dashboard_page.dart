@@ -1,28 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../state/dashboard_cubit.dart';
-import '../widgets/stats_card.dart';
+import '../../../../common/widgets/adaptive_button.dart';
+import '../../../../infrastructure/router/route_names.dart';
+import '../../../authentication/presentation/states/auth_bloc.dart';
+import '../../../authentication/presentation/states/auth_event.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          DashboardCubit(context.read<GetDashboardDataUsecase>())..loadData(),
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Dashboard')),
-        body: BlocBuilder<DashboardCubit, DashboardState>(
-          builder: (context, state) {
-            if (state is DashboardLoading) return const LoadingIndicator();
-            if (state is DashboardError)
-              return AppErrorWidget(message: state.message);
-            if (state is DashboardLoaded)
-              return StatsCard(stats: state.data.stats);
-            return const SizedBox.shrink();
-          },
+    // final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          // l10n?.dashboard ??
+          'Dashboard',
+        ),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AdaptiveButton(
+              onPressed: () {
+                Navigator.pop(context); // Navigate back to LoginPage
+              },
+              child: Text(
+                // l10n?.back ??
+                'Back to Login',
+              ),
+            ),
+            const SizedBox(height: 16),
+            AdaptiveButton(
+              onPressed: () {
+                context.read<AuthBloc>().add(LogoutEvent());
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  RouteNames.login,
+                  (route) => false,
+                );
+              },
+              child: Text(
+                // l10n?.logout ??
+                'Logout',
+              ),
+            ),
+          ],
         ),
       ),
     );

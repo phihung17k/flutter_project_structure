@@ -1,18 +1,36 @@
-import 'package:dio/dio.dart';
-
-import '../../../common/constants/api_constants.dart';
+import '../../../../common/constants/api_constants.dart';
+import '../../../../infrastructure/network/dio_client.dart';
+import '../models/auth_tokens_model.dart';
 import '../models/auth_user_model.dart';
 
-class AuthRemoteDataSource {
-  final Dio dio;
+abstract class AuthRemoteDataSource {
+  Future<(AuthUserModel, AuthTokensModel)> login(String email, String password);
+}
 
-  AuthRemoteDataSource(this.dio);
+class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
+  final DioClient dioClient;
 
-  Future<AuthUserModel> login(String email, String password) async {
-    final response = await dio.post(
-      ApiConstants.loginEndpoint,
-      data: {'email': email, 'password': password},
-    );
-    return AuthUserModel.fromJson(response.data);
+  AuthRemoteDataSourceImpl(this.dioClient);
+
+  @override
+  Future<(AuthUserModel, AuthTokensModel)> login(
+    String email,
+    String password,
+  ) async {
+    try {
+      final response = await dioClient.dio.post(
+        ApiConstants.login,
+        data: {'email': email, 'password': password},
+      );
+      final user = AuthUserModel.fromJson(
+        response.data['user'] as Map<String, dynamic>,
+      );
+      final tokens = AuthTokensModel.fromJson(
+        response.data as Map<String, dynamic>,
+      );
+      return (user, tokens);
+    } catch (e) {
+      throw Exception('Login failed: $e');
+    }
   }
 }

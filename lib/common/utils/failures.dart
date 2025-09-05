@@ -4,9 +4,9 @@ abstract class Failure {
 }
 
 class ServerFailure extends Failure {
-  ServerFailure({required super.message});
+  ServerFailure(super.message);
 }
 
 class CacheFailure extends Failure {
-  CacheFailure({required super.message});
+  CacheFailure(super.message);
 }

@@ -1,16 +1,13 @@
-import 'package:either_dart/either.dart';
-
+import '../entities/auth_tokens.dart';
 import '../entities/auth_user.dart';
 import '../repositories/auth_repository.dart';
-import '../repository/auth_repository.dart';
-import '../../../common/utils/failures.dart';
 
-class LoginUsecase {
+class LoginUseCase {
   final AuthRepository repository;
 
-  LoginUsecase(this.repository);
+  LoginUseCase(this.repository);
 
-  Future<Either<Failure, AuthUser>> call(String email, String password) {
-    return repository.login(email, password);
+  Future<(AuthUser, AuthTokens)> call(String email, String password) async {
+    return await repository.login(email, password);
   }
 }

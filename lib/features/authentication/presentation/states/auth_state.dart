@@ -1,19 +1,62 @@
-part of 'auth_cubit.dart';
+// final class AuthState extends Equatable {
+//   const AuthState({
+//     this.status = FormzSubmissionStatus.initial,
+//     this.username = const Username.pure(),
+//     this.password = const Password.pure(),
+//     this.isValid = false,
+//   });
 
-abstract class AuthState {}
+//   final FormzSubmissionStatus status;
+//   final Username username;
+//   final Password password;
+//   final bool isValid;
+
+//   AuthState copyWith({
+//     FormzSubmissionStatus? status,
+//     Username? username,
+//     Password? password,
+//     bool? isValid,
+//   }) {
+//     return AuthState(
+//       status: status ?? this.status,
+//       username: username ?? this.username,
+//       password: password ?? this.password,
+//       isValid: isValid ?? this.isValid,
+//     );
+//   }
+
+//   @override
+//   List<Object> get props => [status, username, password];
+// }
+
+import 'package:equatable/equatable.dart';
+import '../../domain/entities/auth_user.dart';
+
+abstract class AuthState extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
 
 class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
 
-class AuthAuthenticated extends AuthState {
+class AuthSuccess extends AuthState {
   final AuthUser user;
 
-  AuthAuthenticated(this.user);
+  AuthSuccess(this.user);
+
+  @override
+  List<Object?> get props => [user];
 }
 
-class AuthError extends AuthState {
-  final String message;
+class AuthFailure extends AuthState {
+  final String error;
 
-  AuthError(this.message);
+  AuthFailure(this.error);
+
+  @override
+  List<Object?> get props => [error];
 }
+
+class AuthLoggedOut extends AuthState {}
